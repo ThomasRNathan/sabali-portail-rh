@@ -8,17 +8,18 @@ Exercice Product Builder : un PRD, une spec pour agent de code et un prototype c
 
 | Livrable | Où le trouver |
 | --- | --- |
+| **Prototype** | [sabali-portail-rh.vercel.app](https://sabali-portail-rh.vercel.app) : liste des salariés et inscription d'un salarié |
 | **PRD** | [SPEC.md, partie 1](SPEC.md#partie-1--prd) : périmètre, règles de visibilité, parcours, questions aux décideurs, hypothèses |
+| **Master prompt** | [premier-message.md](premier-message.md) : le prompt qui a lancé le build |
 | **Ce que je ferais avec plus de temps** | [docs/plus-de-temps.md](docs/plus-de-temps.md) |
-| **Prototype** | Liste des salariés et inscription d'un salarié, sur Vercel : lien ajouté après le déploiement |
 
 ## La méthode
 
 Le PRD est écrit pour se suffire à lui-même : une personne comme un agent le comprend sans la consigne de l'exercice. Il sert tel quel de spec à Claude Code, qui construit le prototype. Le dépôt suit les [bonnes pratiques de Claude Code](https://code.claude.com/docs/en/best-practices) et sépare trois choses :
 
-- [`CLAUDE.md`](CLAUDE.md) : les règles du projet, chargées à chaque session. Court, et seulement ce qui ne change pas : commandes, stack, règles de confidentialité.
-- [`SPEC.md`](SPEC.md) : ce qu'on construit. Le PRD, la spec du prototype, ce qui est hors périmètre et une vérification de bout en bout.
-- [`premier-message.md`](premier-message.md) : la tâche du moment. Un plan d'abord, puis la construction, les preuves (build, captures) et le déploiement.
+- [`SPEC.md`](SPEC.md) : ce qu'on construit. Le PRD, puis la spec du prototype, ce qui est hors périmètre et une vérification de bout en bout.
+- [`premier-message.md`](premier-message.md) : le master prompt, envoyé une seule fois pour lancer le build. Un plan d'abord, puis la construction, les preuves (build, captures) et le déploiement.
+- [`CLAUDE.md`](CLAUDE.md) : les règles que Claude Code relit à chaque session. Court, et seulement ce qui ne change pas : commandes, stack, règles de confidentialité.
 
 Les arbitrages produit sont les miens ; l'IA m'a fait gagner du temps sur la rédaction et le code.
 

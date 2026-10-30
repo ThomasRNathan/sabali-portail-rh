@@ -10,6 +10,7 @@ Exercice Product Builder : un PRD, une spec pour agent de code et un prototype c
 | --- | --- |
 | **Prototype** | [sabali-portail-rh.vercel.app](https://sabali-portail-rh.vercel.app) : liste des salariés et inscription d'un salarié |
 | **PRD** | [SPEC.md, partie 1](SPEC.md#partie-1--prd) : périmètre, règles de visibilité, parcours, questions aux décideurs, hypothèses |
+| **PRD en PDF** | [PRD-portail-RH-Sabali.pdf](PRD-portail-RH-Sabali.pdf) : le même PRD, sur une page |
 | **Master prompt** | [premier-message.md](premier-message.md) : le prompt qui a lancé le build |
 | **Ce que je ferais avec plus de temps** | [docs/plus-de-temps.md](docs/plus-de-temps.md) |
 

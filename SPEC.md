@@ -1,6 +1,6 @@
 # SPEC · Prototype du portail RH Mutuelle Sabali
 
-Deux parties : le PRD (le produit, tel que partagé) et la spécification du prototype (ce qu'on construit maintenant). Le prototype couvre les parcours 1 et 2 du PRD et l'encart d'aide « remboursements ».
+Deux parties : le PRD (le produit, sur une page, aussi en [PDF](PRD-portail-RH-Sabali.pdf)) et la spécification du prototype (ce qu'on construit maintenant). Le prototype couvre les parcours 1, 2 et 7 du PRD.
 
 ---
 
@@ -8,70 +8,69 @@ Deux parties : le PRD (le produit, tel que partagé) et la spécification du pro
 
 ### Contexte et objectif
 
-D'après les entretiens (DRH de TransSahel, responsable du support) et la note de la juriste : la Mutuelle Sabali couvre les salariés d'une quarantaine d'entreprises à Dakar. Les RH inscrivent leurs nouveaux salariés par un Excel envoyé par mail, ressaisi à la main en 3 à 5 jours ouvrés, et appellent le support pour tout : 60 % des appels portent sur les inscriptions et sorties, 25 % sur les factures, 15 % sur les remboursements, que les salariés suivent sur WhatsApp.
+Sources : DRH de TransSahel, support, juriste, CEO, ticket de backlog. Aujourd'hui, les RH envoient leurs nouveaux salariés dans un Excel par mail ; le support les ressaisit en 3 à 5 jours ouvrés, avec des erreurs (nom mal orthographié, date de naissance manquante) qui font refuser la carte en pharmacie. 60 % des appels RH portent sur les inscriptions et sorties, 25 % sur les factures, 15 % sur les remboursements. Le ticket « Dashboard RH », vieux de deux ans (remboursements et médicaments par salarié), contredit la note juridique : à fermer.
 
-**La V1 permet à une RH d'inscrire, vérifier et sortir ses salariés et de lire sa facture sans appeler, sans jamais voir de donnée de santé.** Démo au plus gros client, TransSahel Logistique (300 salariés), dans 6 semaines ; cible : −50 % d'appels « est-il couvert ? » à 3 mois.
+**La V1 permet à une RH d'inscrire ses salariés, avec son Excel habituel ou un par un, de savoir qui est couvert, de déclarer les départs et de comprendre sa facture, sans appeler ni voir de donnée de santé.** Démo à TransSahel (300 salariés) dans 6 semaines ; cible proposée, à valider : −50 % d'appels « est-il couvert ? » à 3 mois.
 
 ### 1. Périmètre
 
-- **Pour :** les RH des entreprises clientes, chacune limitée à son entreprise ; côté mutuelle, le support valide ou renvoie chaque inscription.
-- **Pas pour :** les salariés, qui suivent leurs demandes sur WhatsApp.
-- **V1 :** P0 liste des salariés, inscription, sortie, aide « remboursements » ; P1 factures, import Excel.
-- **Jamais :** remboursement ou consommation par salarié, classement de salariés, suspension décidée par la RH (le contrat la réserve à la mutuelle).
+- **Pour :** les RH des ~40 entreprises clientes, chacune limitée à la sienne, et le support de la mutuelle, qui valide les inscriptions. **Pas pour :** les salariés, qui suivent leurs demandes sur WhatsApp.
+- **V1 :** P0 liste, inscription (formulaire et import Excel), validation par le support, sortie, aide « remboursements » ; P1 factures. Plus tard : ayants droit.
+- **Jamais :** donnée médicale, remboursement ou consommation par salarié, classement de salariés, suspension décidée par la RH (le contrat la réserve à la mutuelle).
 
 ### 2. Règles de visibilité
 
-La note juridique interdit à l'employeur toute donnée médicale et le suivi des demandes de remboursement. Filtrage côté serveur, partout : écrans, API, exports, emails, messages d'erreur.
+Filtrage côté serveur, partout : écrans, API, exports, emails, messages d'erreur. Consommation agrégée (V2) : entreprise entière d'au moins 20 salariés, total seul.
 
 | La RH voit | La RH ne voit jamais |
 | --- | --- |
-| Les salariés de son entreprise : nom, date de naissance, matricule, téléphone | Une demande de remboursement : existence, statut, montant, motif de refus |
-| Statut de couverture, dates, motif administratif d'un blocage | Diagnostic, médicament, ordonnance, usage de la carte |
-| Les factures de son entreprise | Un classement de salariés ; les données d'une autre entreprise |
+| Ses salariés : nom, date de naissance, matricule, téléphone | Un remboursement : existence, statut, montant, motif |
+| Statut de couverture, dates, motif d'un blocage | Diagnostic, médicament, ordonnance, usage de la carte |
+| Les factures de son entreprise | Classement de salariés, données d'une autre entreprise |
 
-Consommation agrégée : V2 seulement, pour l'entreprise entière et au moins 20 salariés, total seul, pour qu'on ne reconnaisse personne.
+### 3. Parcours
 
-### 3. Données, statuts et parcours
+**Statuts** : `EN_ATTENTE` (« couvert d'ici le JJ/MM ») → `COUVERT` → `FIN_PROGRAMMEE` → `TERMINE` ; `EN_ATTENTE` ⇄ `A_CORRIGER` (motif `NOM`, `DATE_NAISSANCE` ou `AUTRE`). Email à la RH à chaque changement.
 
-**Salarié** : prénom(s) et nom tels que sur la pièce d'identité, date de naissance, date d'entrée (requis) ; téléphone WhatsApp (+221, 9 chiffres) et matricule (facultatifs) ; statut, motif de correction, date de couverture prévue, date de fin.
+1. **Liste** : en tête « 2 à corriger · 5 en attente », puis recherche et tableau, « à corriger » d'abord.
+2. **Inscrire un salarié** : prénom(s) et nom tels que sur la pièce d'identité, dates de naissance et d'entrée requis ; erreurs sous le champ dès la saisie ; doublon d'une autre entreprise → « Contactez la mutuelle », sans la nommer.
+3. **Importer un Excel, comme aujourd'hui** : colonnes reconnues par leur en-tête, mêmes contrôles ligne par ligne, aperçu « 12 prêtes · 2 à corriger · 1 déjà inscrit » avant tout envoi ; modèle à télécharger en secours.
+4. **Valider (support)** : file des inscriptions en attente ; Valider, ou Renvoyer avec un motif.
+5. **Sortir** (au lieu de « suspendre ») : la RH saisit une date de départ ; la mutuelle fixe la fin selon le contrat.
+6. **Facture** (P1) : total du mois décomposé, chaque ligne reliée aux salariés concernés, sans donnée de soin.
+7. **« Où en est mon remboursement ? »** : encart d'aide, jamais sur la ligne d'un salarié : « C'est confidentiel : écrivez au [numéro WhatsApp] où vous envoyez vos demandes. »
 
-```mermaid
-flowchart LR
-    rh((RH inscrit)) --> attente["En attente<br/>couverture d'ici le JJ/MM"]
-    attente -->|mutuelle valide| couvert["Couvert<br/>depuis le JJ/MM"]
-    attente -->|mutuelle bloque| corriger["À corriger<br/>motif + bouton Corriger"]
-    corriger -->|RH corrige| attente
-    couvert -->|RH déclare la sortie| fin["Fin programmée<br/>jusqu'au JJ/MM"]
-    fin -->|date de fin atteinte| termine["Terminé<br/>masqué par défaut"]
-```
-
-**Statuts** : `EN_ATTENTE` affiche « couvert d'ici le JJ/MM », soit la plus tardive entre la date d'entrée et l'envoi + 5 jours ouvrés (délai actuel, Q2) ; `A_CORRIGER` porte un motif posé par le support : `NOM`, `DATE_NAISSANCE` ou `AUTRE` ; puis `COUVERT`, `FIN_PROGRAMMEE`, `TERMINE`. Email à la RH au passage à `COUVERT` ou `A_CORRIGER`.
-
-1. **Liste des salariés** : en tête « 2 à corriger · 5 en attente » ; recherche par nom ou matricule ; colonnes Nom, Matricule, Statut et date, Action ; « À corriger » d'abord, sortis masqués.
-2. **Inscription** : erreurs sous le champ dès la saisie ; doublon dans l'entreprise → lien vers sa fiche ; dans une autre entreprise → « Contactez la mutuelle », sans la nommer ; échec d'envoi → saisie conservée, bouton Réessayer. Import Excel (P1) : mêmes contrôles, ligne par ligne.
-3. **Sortie** (remplace « suspendre ») : la RH saisit une date de départ → `FIN_PROGRAMMEE` ; la mutuelle fixe la date de fin selon le contrat.
-4. **Facture** (P1) : total du mois décomposé, chaque ligne reliée aux salariés concernés, sans donnée de soin.
-5. **« Où en est mon remboursement ? »** : encart d'aide, jamais sur la ligne d'un salarié : « Je n'ai pas accès à vos remboursements, c'est confidentiel. Écrivez au [numéro WhatsApp] où vous envoyez vos demandes. »
-
-**États** : aucun salarié (« Ajoutez votre premier salarié pour démarrer sa couverture ») ; recherche sans résultat (« Pas inscrit, donc pas couvert. », bouton Inscrire) ; rien à corriger ; liste indisponible (« Impossible de charger la liste », bouton Réessayer).
+**États** : liste vide ; recherche sans résultat (« pas inscrit, donc pas couvert ») ; erreur de chargement, avec Réessayer.
 
 ### 4. Questions pour les décideurs
 
-1. **CEO de la mutuelle** : pour la démo TransSahel, il demandait la consommation de chaque salarié, un top 10 des plus gros consommateurs et un bouton de suspension, que la note juridique interdit. Montre-t-on plutôt la couverture et des factures lisibles ? *Par défaut :* oui ; « suspendre » devient « déclarer une sortie », la consommation agrégée passe en V2.
-2. **CEO et responsable du support** : quel délai d'activation promet-on aux RH ? *Par défaut :* le délai actuel, affiché en date, puis 1 jour ouvré dès que le support le tient, puisque la ressaisie disparaît.
-3. **CEO et responsable du support** : pour les remboursements, améliore-t-on WhatsApp plutôt que de créer un espace salarié ? *Par défaut :* oui, avec un message à chaque étape de la demande, motif de refus compris ; à revoir si les appels RH sur ce sujet ne baissent pas.
+1. **CEO** : sa demande (consommation par salarié, top 10, suspension) est exclue par la note juridique. Ajoute-t-on dès la démo la consommation agrégée de TransSahel (légale à 300 salariés), au risque de retarder l'inscription en ligne ? *Par défaut :* non, V2 si les commerciaux la confirment.
+2. **CEO et support** : quel délai d'activation promet-on aux RH ? *Par défaut :* le délai actuel (5 jours ouvrés), affiché en date, puis 1 jour ouvré dès que le support peut le tenir.
+3. **CEO et support** : pour les remboursements, améliore-t-on WhatsApp plutôt que de créer un espace salarié ? *Par défaut :* oui, avec un message à chaque étape, motif de refus compris ; à revoir si ces appels ne baissent pas.
 
 ### 5. Hypothèses (supposé, non vérifié)
 
-- La mutuelle importe les salariés déjà couverts avant l'ouverture ; tout salarié déclaré est éligible (« pas couvert » = absent de la liste ou sorti).
-- Le chauffeur de TransSahel refusé en pharmacie le mois dernier n'était pas encore saisi, ou l'était avec une erreur.
-- Une inscription validée est aussitôt visible des pharmacies, même sans carte.
-- Les salariés interrogent leur RH faute de nouvelles sur WhatsApp, pas faute de connaître le numéro : ils y envoient déjà leurs demandes.
-- La facture se compose des cotisations par salarié et du prorata ; une seule formule par entreprise ; ayants droit hors V1.
+- La mutuelle charge les salariés déjà couverts et crée les comptes RH avant l'ouverture.
+- Chaque entreprise a son format d'Excel : les en-têtes suffisent, le modèle sert de secours.
+- Une inscription validée est aussitôt visible des pharmacies, même sans carte ; le chauffeur refusé n'était pas saisi, ou mal saisi.
+- Les salariés interrogent leur RH faute de nouvelles sur WhatsApp, pas faute de connaître le numéro.
+- La facture = cotisations par salarié + prorata ; une seule formule par entreprise.
 
 ---
 
 ## Partie 2 · Prototype
+
+### Statuts de couverture
+
+```mermaid
+flowchart LR
+    rh((RH inscrit)) --> attente["En attente<br/>couverture d'ici le JJ/MM"]
+    attente -->|support valide| couvert["Couvert<br/>depuis le JJ/MM"]
+    attente -->|support renvoie| corriger["À corriger<br/>motif + bouton Corriger"]
+    corriger -->|RH corrige| attente
+    couvert -->|RH déclare la sortie| fin["Fin programmée<br/>jusqu'au JJ/MM"]
+    fin -->|date de fin atteinte| termine["Terminé<br/>masqué par défaut"]
+```
 
 ### Données fictives
 
@@ -127,7 +126,7 @@ Une fine bande sombre au-dessus du produit, clairement hors produit :
 
 ## Partie 3 · Hors périmètre du prototype
 
-- Les parcours 3 à 5 du PRD sauf l'encart d'aide « remboursements » : pas de sortie, pas de factures, pas d'import Excel.
+- Les parcours 3 à 6 du PRD : import Excel, validation par le support, sortie, factures.
 - Authentification, base de données, envoi réel d'emails.
 - Toute donnée de santé ou de remboursement, même fictive.
 

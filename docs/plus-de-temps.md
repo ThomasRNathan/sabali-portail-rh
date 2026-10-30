@@ -1,10 +1,12 @@
 # Ce que je ferais avec plus de temps
 
-Suite du [PRD](../SPEC.md#partie-1--prd). Par ordre de risque, avec ce que chaque étape tranche.
+Suite du [PRD](../SPEC.md#partie-1--prd), par ordre de risque.
 
-1. **Vérifier en pharmacie** (avec le support et une pharmacie partenaire) comment la couverture est contrôlée et quand une inscription y apparaît. Tranche la question 2 du PRD (délai d'activation) : si la pharmacie exige une carte physique, « Couvert » dans le portail n'évite pas le refus d'un nouveau salarié.
-2. **Tester le prototype avec 3 RH**, dont la DRH de TransSahel et une entreprise de moins de 20 salariés : comprennent-elles les statuts sans aide ? Ont-elles le nom exact et la date de naissance au moment d'inscrire ? Tranche les libellés et les champs obligatoires.
-3. **Comprendre pourquoi les salariés passent par leur RH** alors qu'ils envoient leurs demandes sur WhatsApp : relire 20 conversations avec le support (délai de réponse, motif de refus envoyé ou non), appeler 5 salariés, et demander à chaque appel RH « le salarié vous a-t-il déjà écrit sur WhatsApp ? ». Tranche la question 3 du PRD (améliorer WhatsApp ou créer un espace salarié).
-4. **Comprendre la facture** : la faire expliquer par la DRH de TransSahel et classer 20 appels factures avec le support. Tranche le contenu de la page Factures.
-5. **Faire valider le tableau de visibilité par la juriste** : motif de blocage visible par la RH, collecte du téléphone, seuil de 20 salariés (entreprise entière ou par site).
-6. **Côté build** : traduire le tableau de visibilité en tests automatiques (aucune route du rôle RH ne renvoie de donnée de remboursement), puis ajouter fiche salarié, sortie et factures au prototype.
+1. Ce qui prend le plus de temps, c'est d'attendre le résultat du prompt : je passerais donc (un peu) plus de temps à itérer sur le prototype.
+2. Vérifier en pharmacie comment la couverture est contrôlée : si une carte physique est exigée, « Couvert » dans le portail ne suffit peut-être pas à éviter un refus.
+3. Tester le prototype avec 3 RH, dont la DRH de TransSahel (et une entreprise de moins de 20 salariés).
+4. Comprendre pourquoi les salariés passent par leur RH alors qu'ils envoient déjà leurs demandes sur WhatsApp : conversations du support, appels à 5 salariés.
+5. Factures (25 % des appels RH) : faire expliquer sa facture par la DRH de TransSahel et classer les appels factures du support pour comprendre ce qui rend le PDF incompréhensible, puis prototyper la page Factures.
+6. Faire valider le tableau de visibilité par la juriste : motif de blocage, téléphone, seuil de 20 salariés.
+7. Pour les entreprises d'au moins 20 salariés, explorer la pertinence d'une consommation agrégée.
+8. Côté build : traduire les règles de visibilité en tests automatiques, puis prototyper l'import Excel, la validation par le support et la sortie.

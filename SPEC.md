@@ -8,9 +8,10 @@ Deux parties : le PRD (le produit, sur une page, aussi en [PDF](PRD-portail-RH-S
 
 ### Contexte et objectif
 
-Sources : DRH de TransSahel, support, juriste, CEO, ticket de backlog. Aujourd'hui, les RH envoient leurs nouveaux salariés dans un Excel par mail ; le support les ressaisit en 3 à 5 jours ouvrés, avec des erreurs (nom mal orthographié, date de naissance manquante) qui font refuser la carte en pharmacie. 60 % des appels RH portent sur les inscriptions et sorties, 25 % sur les factures, 15 % sur les remboursements. Le ticket « Dashboard RH », vieux de deux ans (remboursements et médicaments par salarié), contredit la note juridique : à fermer.
-
-**La V1 permet à une RH d'inscrire ses salariés, avec son Excel habituel ou un par un, de savoir qui est couvert, de déclarer les départs et de comprendre sa facture, sans appeler ni voir de donnée de santé.** Démo à TransSahel (300 salariés) dans 6 semaines ; cible proposée, à valider : −50 % d'appels « est-il couvert ? » à 3 mois.
+- **Constat** : les RH appellent pour tout : inscriptions et sorties (60 %), factures (25 %), remboursements (15 %).
+- **Cause** : l'Excel des nouveaux salariés, envoyé par mail, est ressaisi à la main en 3 à 5 jours ouvrés ; une faute de nom ou une date de naissance manquante fait refuser la carte en pharmacie.
+- **Objectif** : **en V1, la RH inscrit ses salariés (avec son Excel habituel ou un par un), sait qui est couvert, déclare les départs et comprend sa facture, sans appeler ni voir de donnée de santé.** Démo à TransSahel (300 salariés) dans 6 semaines ; cible proposée, à valider : −50 % d'appels « est-il couvert ? » à 3 mois.
+- **Sources** : la note juridique prime ; la DRH et le support fixent les priorités ; le besoin de visibilité du CEO est réel, mais ses solutions sont exclues (question 1) ; le vieux ticket « Dashboard RH » contredit la note : à fermer.
 
 ### 1. Périmètre
 
@@ -52,7 +53,7 @@ Filtrage côté serveur, partout : écrans, API, exports, emails, messages d'err
 
 - La mutuelle charge les salariés déjà couverts et crée les comptes RH avant l'ouverture.
 - Chaque entreprise a son format d'Excel : les en-têtes suffisent, le modèle sert de secours.
-- Une inscription validée est aussitôt visible des pharmacies, même sans carte ; le chauffeur refusé n'était pas saisi, ou mal saisi.
+- Une inscription validée est aussitôt visible des pharmacies, même sans carte.
 - Les salariés interrogent leur RH faute de nouvelles sur WhatsApp, pas faute de connaître le numéro.
 - La facture = cotisations par salarié + prorata ; une seule formule par entreprise.
 
